@@ -47,8 +47,8 @@ export default class Login extends Vue {
   private pwdType = 'password';
 
   private form = {
-    username: 'Abdulsamet',
-    password: '123qweasd_1',
+    username: '',
+    password: '',
   };
 
   private rules = {};
@@ -62,16 +62,6 @@ export default class Login extends Vue {
     this.loading = true;
     AuthModule.Login(this.form).then(() => {
       this.$router.push({path: '/'});
-      /*
-      AuthModule.GetMyAccountInfoAsync().then(() => {
-        PermissionModule.SetUserType(AuthModule.User.user_type);
-        PermissionModule.GenerateRoutes().then(() => {
-          this.$router.push({path: '/'}) // başarılı bir giriş sonrası, ana sayfaya yönlendir.
-        });
-      }).catch(err => {
-        console.log(err + " Ekmek")
-      });
-      */
       this.loading = false;
     }).catch(err => {
       console.log(err);

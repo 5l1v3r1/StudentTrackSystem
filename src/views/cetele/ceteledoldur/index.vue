@@ -1,6 +1,7 @@
 <template>
+  <div class="app-container">
   <div class="cetele-doldur" style="width: 70%; margin: auto;">
-    <el-table :data="dailyStudy.studies" border fit >
+    <el-table v-loading="tableLoading" :data="dailyStudy.studies" border fit >
       <el-table-column align="center" label="Ders Adı" min-width="180px">
         <template slot-scope="scope">
           <span>{{mapCourseIdToCourse(scope.row.course)}}</span>
@@ -33,21 +34,26 @@
     </el-row>
 
   </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { StudyModel } from "@/models/Study";
-import {GetMyCoursesList, GetTodayDailyStudy, SendDailyStudy} from "@/api/cetele";
+import { GetTodayDailyStudyAsync, SendDailyStudyAsync } from "@/api/daily-study";
 import {CourseModel} from "@/models/CourseModel";
-import {DailyStudyModel} from "@/models/dailystudy";
+import {DailyStudy} from "@/models/dailystudy";
+import {GetMyCoursesListAsync} from "@/api/course-group";
+import {Course} from "@/models/Course";
+import {Study} from "@/models/Study";
 
 @Component
 export default class CeteleDoldur extends Vue {
-  courseList: CourseModel[] = [];
+  courseList: Course[] = [];
 
-  dailyStudy: DailyStudyModel = {} as DailyStudyModel;
+  dailyStudy: DailyStudy = {} as DailyStudy;
+
+  tableLoading: boolean = true;
 
   mapCourseIdToCourse(id: number) {
     //  mapCourseIdToCourse(scope.row.id)
@@ -59,40 +65,8 @@ export default class CeteleDoldur extends Vue {
     }
   }
 
-  ChangedBegining(row: StudyModel){
-    /*
-    if (row.begining < 0)
-      row.begining = 0;
 
-    if (row.begining > row.end)
-      row.begining = row.end;
-
-    else {
-      if (row.end > row.begining != 0) {
-        row.amount = row.end - row.begining
-      }
-    }
-    */
-  }
-
-  ChangedEnd(row: StudyModel) {
-    /*
-    console.log(event);
-    if (row.end < 0)
-      row.end = 0;
-
-    if (row.end < row.begining)
-      row.end = row.begining;
-
-    else {
-      if (row.end - row.begining != 0) {
-        row.amount = row.end - row.amount;
-      }
-    }
-    */
-  }
-
-  ChangedAmount(row: StudyModel) {
+  ChangedAmount(row: Study) {
     if (row.begining != row.end){
       if (row.begining > row.end) {
         row.amount = row.end - row.begining;
@@ -110,7 +84,7 @@ export default class CeteleDoldur extends Vue {
 
   async SendCetele() {
     try {
-      const { data, status } = await SendDailyStudy(this.dailyStudy.id, this.dailyStudy.studies);
+      const { data, status } = await SendDailyStudyAsync(this.dailyStudy.id, this.dailyStudy.studies);
       console.log(status);
       if (status == 200) {
         this.$message({
@@ -119,7 +93,6 @@ export default class CeteleDoldur extends Vue {
           duration: 2000,
         });
       }
-
       console.log(data);
     }
     catch (e) {
@@ -128,15 +101,19 @@ export default class CeteleDoldur extends Vue {
   }
 
   async created() {
+    this.tableLoading = true;
     try {
-      const { data: courses } = await GetMyCoursesList();
-      this.courseList = courses;
+      const { data: courses } = await GetMyCoursesListAsync();
+      this.courseList = courses as Course[];
 
-      const { data: dailyStudy } = await GetTodayDailyStudy();
-      this.dailyStudy = dailyStudy;
+      const { data: dailyStudy } = await GetTodayDailyStudyAsync();
+      this.dailyStudy = dailyStudy as DailyStudy;
     }
     catch (e) {
       console.log(e);
+    }
+    finally {
+      this.tableLoading = false;
     }
   }
 

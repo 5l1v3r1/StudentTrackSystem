@@ -2,23 +2,28 @@
   <div class="login-container">
     <el-form
       :model="form"
-      :rules="rules"
+      :rules="loginRules"
       class="login-form"
       auto-complete="on"
       label-position="left">
 
       <h3 class="title">Çetelem</h3>
-      <el-form-item>
+      <el-form-item prop="username" >
         <span class="svg-container">
           <svg-icon name="user"/>
         </span>
-        <el-input v-model="form.username" placeholder="Kullanıcı Adı"></el-input>
+        <el-input required v-model="form.username" placeholder="Kullanıcı Adı" name="username" ></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon name="password"/>
         </span>
-        <el-input v-model="form.password" auto-complete="on" placeholder="Parola"/>
+        <el-input name="password"
+                  v-model="form.password"
+                  :type="pwdType"
+                  @keyup.enter.native="Login"
+                  auto-complete="on"
+                  placeholder="Parola"/>
         <span class="show-pwd" @click="ShowPwd">
           <svg-icon :name="ShowPwIcon"/>
         </span>
@@ -39,33 +44,52 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { AuthModule } from "@/store/auth.module";
+import {Message} from "element-ui";
+
 
 @Component
 export default class Login extends Vue {
+
+
   private loading = false;
 
   private pwdType = 'password';
 
   private form = {
-    username: '',
-    password: '',
+    username: 'kudretuğur',
+    password: '123qweasd_1',
   };
 
-  private rules = {};
+  private validateUsername = (rule, value, callback) => {
+    if (value === '') {
+      callback(new Error('Kullanıcı Adı Boş Bırakılamaz!'))
+    }
+  };
+
+  private validatePassword = (rule, value, callback) => {
+    if (value === '') {
+      callback(new Error('Parola Boş Bırakılamaz!'))
+    }
+  };
+
+  private loginRules = {
+    username: [{ required: true, trigger: 'blur', validator: this.validateUsername }],
+    password: [{ required: true, trigger: 'blur', validator: this.validatePassword }]
+  };
 
   private ShowPwd() {
     this.pwdType =
       this.pwdType === "password" ? "" : "password";
   }
 
-  private Login() {
+
+  private async Login() {
+
     this.loading = true;
     AuthModule.Login(this.form).then(() => {
       this.$router.push({path: '/'});
       this.loading = false;
     }).catch(err => {
-      console.log(err);
-      // this.$message.error(err);
       this.loading = false;
     });
 

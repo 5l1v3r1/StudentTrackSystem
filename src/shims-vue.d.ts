@@ -6,3 +6,10 @@ declare module '*.vue' {
 declare module 'element-ui/*';
 
 declare module 'path-to-regexp';
+
+declare module 'prettier';
+
+declare module '*';
+
+//declare module '@/views/raporislem/Export2Excel.js'
+

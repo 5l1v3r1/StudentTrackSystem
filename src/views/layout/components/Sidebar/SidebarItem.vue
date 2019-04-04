@@ -81,51 +81,5 @@ export default class SidebarItem extends Vue {
 </script>
 
 <style lang="scss">
-@import "src/styles/variables.scss";
 
-.el-submenu.is-active > .el-submenu__title {
-  color: $subMenuActiveText !important;
-}
-
-.full-mode {
-  .nest-menu .el-submenu>.el-submenu__title,
-  .el-submenu .el-menu-item {
-    background-color: $subMenuBg !important;
-
-    &:hover {
-      background-color: $subMenuHover !important;
-    }
-  }
-}
-
-.simple-mode {
-  &.first-level {
-    .submenu-title-noDropdown {
-      padding-left: 10px !important;
-      position: relative;
-
-      .el-tooltip {
-        padding: 0 10px !important;
-      }
-    }
-
-    .el-submenu {
-      overflow: hidden;
-
-      &>.el-submenu__title {
-        padding-left: 10px !important;
-
-        .el-submenu__icon-arrow {
-          display: none;
-        }
-      }
-    }
-  }
-}
-</style>
-
-<style lang="scss" scoped>
-.svg-icon {
-  margin-right: 16px;
-}
 </style>

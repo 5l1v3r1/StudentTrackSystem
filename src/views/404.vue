@@ -8,9 +8,11 @@
                 <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
             </div>
             <div class="text-404">
-                <div class="text-404__oops">OOPS! Mübarek yazını mı aksattın? Nasıl girebildin şaşırdım yani.</div>
+                <div class="text-404__oops">Sayfayı bulamadık.</div>
+                <!--
                 <div class="text-404__info">Sayfa Bulunamadı.</div>
                 <div class="text-404__headline">{{ message }}</div>
+                -->
                 <a href="/" class="text-404__return-home" >Ana Sayfaya Dön.</a>
             </div>
         </div>
@@ -23,12 +25,13 @@
     @Component
     export default class NotFound extends Vue {
         get message() {
-            return 'Meşhur bir hata olan 404\'ü aldın yani. :) :) :)';
+            return '';
         }
     }
 </script>
 
 <style lang="scss" scoped>
+
     .wscn-http404-container{
         transform: translate(-50%,-50%);
         position: absolute;
@@ -218,7 +221,7 @@
             &__return-home {
                 display: block;
                 float: left;
-                width: 110px;
+                width: 120px;
                 height: 36px;
                 background: #1482f0;
                 border-radius: 100px;

@@ -6,7 +6,8 @@ import { LoginAsync } from '@/api/login';
 
 import { GetMyAccountInfoAsync } from '@/api/user'
 
-import { UserModel } from '@/models/user';
+import {User} from '@/models/user';
+
 import {setToken, getToken, removeToken} from '@/utils/auth';
 
 
@@ -20,21 +21,23 @@ import {setToken, getToken, removeToken} from '@/utils/auth';
 @Module({ dynamic: true, store, name: 'auth' })
 class Auth extends VuexModule {
     public token = getToken();
-    public User: UserModel = new UserModel();
+    public User: User = {} as User;
 
     @Mutation
     private SET_TOKEN(token: string) {
         this.token = token;
     }
 
+
     @Action({ commit: "SET_TOKEN" })
     public async Login(userInfo: { username: string, password: string }) {
         try {
-            const { data } = await LoginAsync(userInfo.username, userInfo.password)
+            const { data } = await LoginAsync(userInfo.username, userInfo.password);
             setToken('Token ' + data.token); // cookie'e yazmazsak, sayfa reflesh olunca vuexdeki data gidiyor, token de kaybolacak.
             // he next time you open the page or refresh the page, you can remember The user's login status, no need to go to the login page to log in again.
             return 'Token ' + data.token;
         } catch (err) {
+            console.log(err)
             //throw Error("Kullanıcı adınız ve şifrenizi doğru girdiğinizden emin olun.")
         }
     }

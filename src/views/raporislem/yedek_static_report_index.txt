@@ -1,0 +1,259 @@
+<template>
+    <div class="app-container">
+
+        <div class="filter-container">
+            <el-tag class="filter-item">İzmir</el-tag>
+
+
+            <el-date-picker
+                    class="filter-item"
+                    v-model="listQuery.startDate"
+                    type="date"
+                    format="dd-MM-yyyy"
+                    placeholder="Başlangıç Tarihi">
+            </el-date-picker>
+
+
+            <el-date-picker
+                    class="filter-item"
+                    v-model="listQuery.endDate"
+                    type="date"
+                    format="dd-MM-yyyy"
+                    placeholder="Bitiş Tarihi">
+            </el-date-picker>
+
+
+            <el-select class="filter-item"
+                       v-model="listQuery.courseGroup" placeholder="Grup Seç">
+                <el-option
+                        v-for="item in courseGroupType"
+                        :key="item.key"
+                        :label="item.displayName"
+                        :value="item.key">
+                </el-option>
+            </el-select>
+
+
+            <el-switch
+                    class="filter-item"
+                    v-model="listQuery.isValidated"
+                    active-text="Onaylanan Çeteleler"
+                    inactive-text="Onaylanmayan Çeteleler">
+            </el-switch>
+
+
+            <el-button class="filter-item"
+                       style="cursor: pointer; " type="primary">Raporu Oluştur
+            </el-button>
+        </div>
+
+        <el-table
+                :data="tableData"
+                border
+                fit
+                style="width: 100%;">
+            <el-table-column
+                    label="NO"
+                    type="index">
+            </el-table-column>
+            <el-table-column
+                    prop="classroom"
+                    label="MEDRESE"
+                    width="150">
+            </el-table-column>
+            <el-table-column
+                    prop="namesurname"
+                    label="İSİM SOYİSİM"
+                    width="200"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="kuran"
+                    label="Kur'ân (20)"
+                    sortable
+                    width="120">
+            </el-table-column>
+
+            <el-table-column
+                    prop="mutalaa"
+                    label="Mütalaa (30)"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="yazi"
+                    label="Yazı(3,5)"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="cevşen"
+                    label="Cevşen (30)"
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="kitap"
+                    label="Kitap (30)"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="gunluktekrar"
+                    label="Gunluk Tekrar"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="gunlukhazırlık"
+                    label="Gunluk Hazırlık"
+                    sortable
+            >
+            </el-table-column>
+
+            <el-table-column
+                    prop="soru"
+                    sortable
+                    label="Soru">
+            </el-table-column>
+
+        </el-table>
+
+
+    </div>
+</template>
+
+<script lang="ts">
+    import {Component, Vue} from "vue-property-decorator";
+    import {GetDailyStudiesAsync} from "@/api/report";
+
+    @Component
+    export default class CeteleGenelToplam extends Vue {
+
+
+
+        created() {
+            GetDailyStudiesAsync(1,3,'2019-01-01','2019-03-28',true).then(res => {
+                const { data } = res;
+                console.log(data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
+
+
+        private listQuery = {
+            startDate: '',
+            endDate: '',
+            courseGroup: '',
+            time: '',
+            isValidated: false,
+
+        };
+
+        private courseGroupType = [
+            {displayName: 'Ortaokul Grubu', key: 'OG'},
+            {displayName: 'Lise Grubu', key: 'LG'},
+            {displayName: 'Üniversite Grubu', key: 'ÜG'},
+        ];
+
+        private timeTyme = [
+            {displayName: 'Haftalık', key: 'week'},
+            {displayName: 'Aylık', key: 'month'},
+        ];
+
+        private sortables = [
+            {prop: 'kuran', order: 'descending'},
+        ];
+
+
+        private tableData = [{
+            no: 1,
+            classroom: 'Nur',
+            namesurname: 'Mahmut BlaBla',
+            kuran: '10',
+            mutalaa: '15',
+            ezber: '5',
+            yazi: 8,
+            cevşen: '40',
+            kitap: '30',
+            gunluktekrar: '20',
+            gunlukhazırlık: '1',
+            soru: '15'
+        },
+            {
+                no: 2,
+                classroom: 'Karadeniz',
+                namesurname: 'Abdulsamet İleri',
+                kuran: '12',
+                mutalaa: '15',
+                ezber: '5',
+                yazi: 4,
+                cevşen: '40',
+                kitap: '30',
+                gunluktekrar: '20',
+                gunlukhazırlık: '1',
+                soru: '15'
+            }, {
+                no: 3,
+                classroom: 'Şirinyer',
+                namesurname: 'Hasan Hüseyin Pay',
+                kuran: '5',
+                mutalaa: '15',
+                ezber: '5',
+                yazi: 6,
+                cevşen: '40',
+                kitap: '30',
+                gunluktekrar: '20',
+                gunlukhazırlık: '1',
+                soru: '15'
+            }, {
+                no: 4,
+                classroom: 'Nur',
+                namesurname: 'Batuhan Hiçkorkmaz',
+                kuran: '13',
+                mutalaa: '15',
+                ezber: '5',
+                yazi: 2,
+                cevşen: '40',
+                kitap: '30',
+                gunluktekrar: '20',
+                gunlukhazırlık: '1',
+                soru: '15'
+            }];
+
+
+    }
+</script>
+
+<style>
+
+    .el-table .cell {
+        word-break: break-word;
+    }
+
+
+</style>
+
+<style scoped lang="scss">
+
+    .filter-container {
+        padding-bottom: 10px;
+
+        .filter-item {
+            display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+    }
+
+
+</style>

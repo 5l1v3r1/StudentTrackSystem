@@ -14,38 +14,43 @@ const whiteList = ['/login'];
 
 router.beforeEach((to: Route, from: Route, next: any) => {
   NProgress.start();
-  if (getToken()) {
-    if (to.path == '/login') {
-      next({path: '/'});
-      NProgress.done();
-    } 
-    else {
-      if (PermissionModule.routers.length === 0){ // when page is reloaded.
-        AuthModule.GetMyAccountInfoAsync().then(() => {
-          PermissionModule.SetUserType(AuthModule.User.user_type);
 
-          PermissionModule.GenerateRoutes().then(() => {
-            router.addRoutes(PermissionModule.addRouters);
-            next({ ...to, replace: true })
-          });
-
-        }).catch(err => {
-          Message.error(err);
-          AuthModule.LogOut().then(() => {
-            location.reload(); // yeniden yükleyince token'in olmaıdğını görüp, logine gidecek.
-          });
-        });
+  if (to.path == '/swagger')
+    next();
+  else {
+    if (getToken()) {
+      if (to.path == '/login') {
+        next({path: '/'});
+        NProgress.done();
       }
-      else{
-        next();
+      else {
+        if (PermissionModule.routers.length === 0){ // when page is reloaded.
+          AuthModule.GetMyAccountInfoAsync().then(() => {
+            PermissionModule.SetUserType(AuthModule.User.user_type);
+
+            PermissionModule.GenerateRoutes().then(() => {
+              router.addRoutes(PermissionModule.addRouters);
+              next({ ...to, replace: true })
+            });
+
+          }).catch(err => {
+            Message.error(err);
+            AuthModule.LogOut().then(() => {
+              location.reload(); // yeniden yükleyince token'in olmaıdğını görüp, logine gidecek.
+            });
+          });
+        }
+        else{
+          next();
+        }
       }
     }
-  }
-  else {
-    if (whiteList.indexOf(to.path) !== -1) {
-      next();
-    } else {
-      next('/login');
+    else {
+      if (whiteList.indexOf(to.path) !== -1) {
+        next();
+      } else {
+        next('/login');
+      }
     }
   }
 });

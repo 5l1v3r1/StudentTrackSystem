@@ -55,39 +55,15 @@ class Permission extends VuexModule {
 
   @Action({ commit: "SET_ROUTERS" })
   public async GenerateRoutes() {
-      let accessedRouters: any = [];
-
-      let userType: number = AuthModule.User.user_type;
-      const roles: number[] = [ userType ];
-      console.log(roles);
-
-      accessedRouters = filterAuthorityRouter(asyncRouterMap, roles);
-
-      console.log(accessedRouters);
-
-      return accessedRouters;
+      const roles = [ AuthModule.User.user_type ];
+      return filterAuthorityRouter(asyncRouterMap, roles);
   }
-
-  @Action({ commit: 'REMOVE_ROUTERS' })
-  public async RemoveRouters() {
-      //removeGeneratedRouters();
-      return;
-  }
-
 
   @Action({ commit: 'SET_USERTYPE' })
   public SetUserType(type: number): number {
     return type;
   }
 
-  /*
-  @MutationAction({ mutate: ['userType'] })
-  public SET_ROLE(type: number) {
-    return {
-      userType: type
-    };
-  }
-  */
 }
 
 export const PermissionModule = getModule(Permission);

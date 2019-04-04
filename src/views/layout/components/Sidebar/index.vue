@@ -35,7 +35,6 @@ export default class SideBar extends Vue {
 
   get routes() {
     //console.log((this.$router as any).options.routes)
-    console.log(PermissionModule.routers);
     return PermissionModule.routers
     //return (this.$router as any).options.routes;
   }
@@ -45,37 +44,3 @@ export default class SideBar extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-.horizontal-collapse-transition {
-  transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
-}
-
-.scrollbar-wrapper {
-  overflow-x: hidden !important;
-
-  .el-scrollbar__view {
-    height: 100%;
-  }
-}
-
-.el-scrollbar__bar {
-  &.is-vertical {
-    right: 0px;
-  }
-
-  &.is-horizontal {
-    display: none;
-  }
-}
-</style>
-
-<style lang="scss" scoped>
-@import "src/styles/variables.scss";
-
-.el-menu {
-  border: none;
-  height: 100%;
-  width: 100% !important;
-}
-</style>

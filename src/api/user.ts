@@ -5,3 +5,9 @@ export const GetMyAccountInfoAsync = () =>
     url: '/api/user/me/',
     method: 'get',
   });
+
+export const AdminGetUsersByClassroomIdAsync = (classroomId: number) =>
+    request({
+       url:  `/api/admin/user/classroom/${classroomId}/`,
+       method: 'get'
+    });

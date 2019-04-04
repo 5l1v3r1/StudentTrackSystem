@@ -5,6 +5,8 @@ import Layout from '@/views/layout/Layout.vue';
 Vue.use(Router);
 
 /**
+* note: sub-menu only appear when children.length>=1
+
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
 * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
@@ -14,6 +16,16 @@ Vue.use(Router);
    icon: 'svg-name'             the icon show in the sidebar,
    noCache: true                if fasle ,the page will no be cached(default is false)
  }
+ **/
+
+/**
+ Lazy loading of the route should be a function that will be used for writing larger projects.
+ The corresponding component will only be loaded when the component is used.
+ This greatly reduces the size of the initial page js and makes better use of the browser.
+
+ const Foo = resolve => require(['./Foo.vue'], resolve)
+ or
+ const Foo = () => import('./Foo');
 **/
 
 
@@ -33,10 +45,49 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
     {
-        path: '/talebeislem',
+        path: '/gösterge-paneli',
+        component: Layout,
+
+        meta: {
+            title: 'Gösterge Paneli',
+            icon: 'table',
+            roles: [1]
+        },
+        children: [
+            {
+                name: 'dashboard',
+                path: '',
+                component: () => import('@/views/dashboard/index.vue'),
+
+            }
+        ]
+    },
+    {
+        path: '/rapor-islem',
+        component: Layout,
+        redirect: '/rapor-islem/cetele-genel-toplam',
+        name: 'raporislem',
+        meta: {
+            title: 'Rapor İşlemleri',
+            roles: [1]
+        },
+        children: [
+            {
+                path: 'cetele-genel-toplam',
+                component: () => import('@/views/raporislem/index.vue'),
+                name: 'CeteleGenelToplam',
+                meta: {
+                    title: 'Genel Toplam',
+                    icon: 'excel',
+                }
+            }
+        ]
+    },
+    {
+        path: '/talebe-islem',
         component: Layout,
         meta: {
-            roles: [4]
+            roles: [1, 2, 4]
         },
         children: [
             {
@@ -51,12 +102,26 @@ export const asyncRouterMap = [
         ]
     },
     {
+        path: '/cetele-islem/:id',
+        component: Layout,
+        children: [
+            {
+                path: '',
+                component: () => import('@/views/cetele/ceteleislem/index.vue'),
+                meta: { title: 'Çetele İşlem', noCache: true },
+                name: 'CeteleIslem',
+                hidden: true,
+            }
+        ],
+        meta: { hidden: true },
+    },
+    {
         path: '/',
         component: Layout,
-        redirect: '/ceteledoldur',
+        redirect: '/cetele-doldur',
         meta: { hidden: false },
         children: [{
-            path: 'ceteledoldur',
+            path: 'cetele-doldur',
             name: 'CeteleDoldur',
             component: () => import('@/views/cetele/ceteledoldur/index.vue'),
             meta: { title: 'Çetele Doldur', icon: 'form' }

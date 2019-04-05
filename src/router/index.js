@@ -1,12 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 import Layout from '@/views/layout/Layout.vue';
-
 Vue.use(Router);
 // bunu diyerek iki objeyede her componentten erişimi sağladık.
 // this.$router is the router object
 // this.$route is the current route object
-
 /**
 * note: sub-menu only appear when children.length>=1
 
@@ -20,7 +18,6 @@ Vue.use(Router);
    noCache: true                if fasle ,the page will no be cached(default is false)
  }
  **/
-
 /**
  Lazy loading of the route should be a function that will be used for writing larger projects.
  The corresponding component will only be loaded when the component is used.
@@ -30,8 +27,6 @@ Vue.use(Router);
  or
  const Foo = () => import('./Foo');
 **/
-
-
 export const constantRouterMap = [
     {
         path: '/login',
@@ -40,12 +35,10 @@ export const constantRouterMap = [
     },
     {
         path: '/404',
-        component: () => import('@/views/404.vue') ,
+        component: () => import('@/views/404.vue'),
         meta: { hidden: true },
     },
-
 ];
-
 export const asyncRouterMap = [
     {
         path: '/gösterge-paneli',
@@ -159,11 +152,11 @@ export const asyncRouterMap = [
         redirect: '/cetele-doldur',
         meta: { hidden: false },
         children: [{
-            path: 'cetele-doldur',
-            name: 'CeteleDoldur',
-            component: () => import('@/views/cetele/ceteledoldur/index.vue'),
-            meta: { title: 'Çetele Doldur', icon: 'form' }
-        }],
+                path: 'cetele-doldur',
+                name: 'CeteleDoldur',
+                component: () => import('@/views/cetele/ceteledoldur/index.vue'),
+                meta: { title: 'Çetele Doldur', icon: 'form' }
+            }],
     },
     {
         path: '*',
@@ -171,13 +164,8 @@ export const asyncRouterMap = [
         meta: { hidden: true },
     }
 ];
-
-
-
 const router = new Router({
     mode: 'history',
     routes: constantRouterMap
 });
-
-
 export default router;

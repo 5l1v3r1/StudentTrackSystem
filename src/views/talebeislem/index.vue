@@ -36,23 +36,27 @@
 
         <template slot-scope="scope">
 
-          <router-link :to="{name: 'CeteleIslem', params: {id: scope.row.id} }" >
+          <router-link :to="{name: 'CeteleIslem', params: {id: scope.row.id, name: scope.row.first_name + '-' + scope.row.last_name} }" >
             <el-button
                     size="mini"
                     class="filter-item"
                     @click="handleCeteleIslem(scope.$index, scope.row)">Çetele İşlemleri</el-button>
           </router-link>
 
+          <router-link :to="{name: 'KurIslem', params: {id: scope.row.id, name: scope.row.first_name + '-' + scope.row.last_name} }" >
+            <el-button
+                    size="mini"
+                    class="filter-item"
+                    @click="handleKurIslem(scope.$index, scope.row)">Kur İşlemleri</el-button>
 
-          <el-button
-                  size="mini"
-                  class="filter-item"
-                  @click="handleKurIslem(scope.$index, scope.row)">Kur İşlemleri</el-button>
+          </router-link>
 
-          <el-button
-                  size="mini"
-                  class="filter-item"
-                  @click="handleProfilIslem(scope.$index, scope.row)">Profil İşlemleri</el-button>
+          <router-link :to="{name: 'ProfilIslem', params: {id: scope.row.id, name: scope.row.first_name + '-' + scope.row.last_name} }" >
+            <el-button
+                    size="mini"
+                    class="filter-item"
+                    @click="handleProfilIslem(scope.$index, scope.row)">Profil İşlemleri</el-button>
+          </router-link>
         </template>
       </el-table-column>
 
@@ -84,9 +88,6 @@ export default class TalebeIslem extends Vue {
 
 
   handleCeteleIslem(index, row) {
-
-
-
     console.log(index, row);
   }
 

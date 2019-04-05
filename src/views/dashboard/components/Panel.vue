@@ -1,8 +1,8 @@
 <template>
-        <el-col :xs="12" :sm="12" :lg="8" class="card-panel-col">
-            <div class="card-panel">
+        <el-col :xs="24" :sm="12" :lg="4" class="card-panel-col">
+            <div class="card-panel" @click="handleSetLineChartData(type)" >
 
-                <div class="card-panel-icon-wrapper icon-people">
+                <div class="card-panel-icon-wrapper icon-message">
                     <svg-icon :name="iconName" class="card-panel-icon" />
                 </div>
                 <div class="card-panel-description">
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+    import {Component, Vue, Prop, Emit} from 'vue-property-decorator';
 import CountTo from 'vue-count-to'
 
 @Component({
@@ -28,6 +28,11 @@ export default class Panel extends Vue {
     @Prop({required: true, default: ''}) readonly iconName!: string;
     @Prop(String) readonly title !: string;
     @Prop(Number) readonly value !: number;
+
+    @Prop() readonly type!: string;
+
+    @Emit('handleSetLineChartData')
+    private handleSetLineChartData(type: string) {}
 }
 
 
@@ -54,7 +59,7 @@ export default class Panel extends Vue {
                 color: #fff;
             }
             .icon-people {
-                background: #40c9c6;
+                //background: #40c9c6;
             }
             .icon-message {
                 background: #36a3f7;

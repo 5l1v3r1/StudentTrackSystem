@@ -8,10 +8,6 @@ var echarts = require('echarts/lib/echarts')
 require('echarts/lib/chart/pie');
 require('echarts/theme/macarons') // echarts theme
 
-export interface PieData {
-    name: string,
-    value: number,
-}
 
 @Component
 export default class PieChart extends Vue {
@@ -19,6 +15,9 @@ export default class PieChart extends Vue {
     private chart: any = {};
 
     @Prop({ required: true }) readonly pieData!: Array<object>;
+
+
+
 
     @Watch('pieData')
     OnPieDataChanged(val: Array<object>, oldVal: Array<object>) {

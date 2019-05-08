@@ -4,7 +4,7 @@
     <breadcrumb />
 
     <div class="avatar-container">
-      <el-button size="medium" type="danger" @click="logout()" >Çıkış Yap</el-button>
+      <el-button size="medium" type="danger" @click="logout()" >Logout</el-button>
     </div>
 
   </div>

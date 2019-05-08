@@ -8,12 +8,12 @@
                 <img class="pic-404__child right" src="@/assets/404_images/404_cloud.png" alt="404">
             </div>
             <div class="text-404">
-                <div class="text-404__oops">Sayfayı bulamadık.</div>
+                <div class="text-404__oops">Page Not Found!</div>
                 <!--
                 <div class="text-404__info">Sayfa Bulunamadı.</div>
                 <div class="text-404__headline">{{ message }}</div>
                 -->
-                <a href="/" class="text-404__return-home" >Ana Sayfaya Dön.</a>
+                <a href="/" class="text-404__return-home" >Return Main Page</a>
             </div>
         </div>
     </div>

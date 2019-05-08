@@ -56,8 +56,8 @@ export default class Login extends Vue {
   private pwdType = 'password';
 
   private form = {
-    username: 'kudretuğur',
-    password: '123qweasd_1',
+    username: 'Matthew',
+    password: 'samet123',
   };
 
   private validateUsername = (rule, value, callback) => {

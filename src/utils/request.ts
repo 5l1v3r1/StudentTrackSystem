@@ -3,7 +3,7 @@ import { getToken } from './auth';
 import { Message } from 'element-ui';
 
 const service = axios.create({
-    baseURL: "http://cetelem.disgem.org:1899/",
+    baseURL: "http://ec2-18-185-137-160.eu-central-1.compute.amazonaws.com/",
     timeout: 5000,
 });
 

@@ -1,4 +1,4 @@
 export interface Course {
-    readonly id?: number;
+    readonly id: number;
     name: string;
 }

@@ -1,5 +1,5 @@
 export interface User {
-    readonly id?: number;
+    readonly id: number;
     username: string;
     password?: string;
     first_name: string;
@@ -7,6 +7,6 @@ export interface User {
     phone_number?: string;
     readonly user_type: number;
     readonly classroom?: number;
-    readonly course_group?: number;
+    readonly course_group: number;
     readonly joined_date?: string;
 }

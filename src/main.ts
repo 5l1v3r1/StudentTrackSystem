@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/tr-TR'
+import locale from 'element-ui/lib/locale/lang/en'
 import SvgIcon from 'vue-svgicon';
 
 
@@ -14,7 +14,7 @@ import router from '@/router'
 import store from '@/store'
 import '@/permission';
 
-Vue.use(ElementUI, {locale, size: 'small'});
+Vue.use(ElementUI, {locale, size: 'medium'});
 
 Vue.use(SvgIcon, {
   tagName: 'svg-icon',
@@ -25,8 +25,10 @@ Vue.use(SvgIcon, {
 
 Vue.config.productionTip = false
 
-new Vue({
+var vm = new Vue({
   render: h => h(App),
   router,
   store
 }).$mount('#app')
+
+export default vm;

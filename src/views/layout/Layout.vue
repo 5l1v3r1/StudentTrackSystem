@@ -4,6 +4,7 @@
     <sidebar class="sidebar-container" :collapse="classObj.hideSidebar"/>
     <div class="main-container">
       <navbar/>
+      <tags-view />
       <app-main/>
     </div>
   </div>
@@ -15,12 +16,14 @@ import ResizeMixin from './mixin/ResizeHandler';
 import { Component, Vue } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import { DeviceType, AppModule } from '@/store/app.module';
+import TagsView from "@/views/layout/components/TagsView/index.vue";
 
 @Component({
   components: {
     Navbar,
     Sidebar,
     AppMain,
+    TagsView
   },
 })
 export default class Layout extends mixins(ResizeMixin) {

@@ -2,56 +2,62 @@
     <div class="app-container">
 
         <div class="filter-container">
-            <el-tag class="filter-item">İzmir</el-tag>
+
+            <el-row type="flex" justify="center">
+                <el-col align="center">
+                    <el-tag class="filter-item">London</el-tag>
+
+                    <el-date-picker
+                            style="margin-left:20px;"
+                            v-model="dateValue"
+                            type="daterange"
+                            align="left"
+                            size="large"
+                            format="MM-dd-yyyy"
+                            range-separator="To"
+                            start-placeholder="Start Tarihi"
+                            end-placeholder="End Tarihi"
+                            :picker-options="pickerOptions">
+                    </el-date-picker>
+
+                    <el-select style="margin-left:20px;"
+                               v-model="courseGroupId" size="large" placeholder="Choose Course Group">
+                        <el-option
+                                v-for="course in courses"
+                                :label="course.name"
+                                :key="course.id"
+                                :value="course.id">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
 
 
 
-            <el-date-picker
-                    v-model="dateValue"
-                    type="daterange"
-                    align="right"
-                    format="dd-MM-yyyy"
-                    unlink-panels
-                    range-separator="To"
-                    start-placeholder="Başlangıç Tarihi"
-                    end-placeholder="Bitiş Tarihi"
-                    :picker-options="pickerOptions">
-            </el-date-picker>
+            <el-row style="margin-top: 20px;" >
+                <el-col align="center">
+                    <el-switch
+                            class="filter-item"
+                            v-model="validated"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"
+                            active-text="Validated DailyStudy"
+                            inactive-text="Unvalidated DailyStudy">
+                    </el-switch>
 
 
-
-            <el-select v-model="courseGroupId" class="filter-item" placeholder="Grup Seç">
-                <el-option
-                        v-for="course in courses"
-                        :label="course.name"
-                        :key="course.id"
-                        :value="course.id">
-                </el-option>
-            </el-select>
+                    <el-button class="filter-item"
+                               style="cursor: pointer;" type="primary"
+                               @click="GetDailyStudies">List Daily Studies
+                    </el-button>
 
 
-            <el-switch
-                    class="filter-item"
-                    v-model="validated"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    active-text="Onaylanan Çeteleler"
-                    inactive-text="Onaylanmayan Çeteleler">
-            </el-switch>
-
-
-            <el-button class="filter-item"
-                       style="cursor: pointer;" type="primary"
-                       @click="GetDailyStudies">Çeteleleri Listele
-            </el-button>
-
-
-            <el-button class="filter-item" type="primary"
-                       :disabled="IsRaporOlusturDisable"
-                        @click="exportExcel"
-                    >Raporu Oluştur
-            </el-button>
-
+                    <el-button class="filter-item" type="primary"
+                               :disabled="IsRaporOlusturDisable"
+                               @click="exportExcel">Create Report
+                    </el-button>
+                </el-col>
+            </el-row>
 
 
         </div>
@@ -60,6 +66,7 @@
         <el-table
                 ref="tableData"
                 :data="veri"
+                v-if="veri.length !== 0"
                 border
                 fit
                 style="width: 100%;">
@@ -81,14 +88,14 @@
 <script lang="ts">
     import {Component, Vue} from "vue-property-decorator";
     import {GetDailyStudiesAsync} from "@/api/report";
-    import {GetMyCoursesListAsync} from "@/api/course-group";
+    import {GetAllCourseGroups, GetMyCoursesListAsync} from "@/api/course-group";
     import {CourseModel} from "@/models/CourseModel";
 
     import moment from 'moment';
     import {Course} from "@/models/Course";
 
     @Component
-    export default class CeteleGenelToplam extends Vue {
+    export default class DailyStudyReport extends Vue {
 
 
         private isLoading = true;
@@ -105,17 +112,14 @@
 
 
         private timeTyme = [
-            {displayName: 'Haftalık', key: 'week'},
-            {displayName: 'Aylık', key: 'month'},
+            {displayName: 'Week', key: 'week'},
+            {displayName: 'Month', key: 'month'},
         ];
 
-        private sortables = [
-            {prop: 'kuran', order: 'descending'},
-        ];
 
         private pickerOptions = {
             shortcuts: [{
-                text: 'Geçen Hafta',
+                text: 'Last Week',
                 onClick(picker) {
                     const end = new Date();
                     const start = new Date();
@@ -123,7 +127,7 @@
                     picker.$emit('pick', [start, end]);
                 }},
                 {
-                    text: '2 Hafta Önce',
+                    text: 'Last 2 Week',
                     onClick(picker) {
                         const end = new Date();
                         const start = new Date();
@@ -132,7 +136,7 @@
                     }
                 },
                 {
-                    text: '3 Hafta Önce',
+                    text: 'Last 3 Week',
                     onClick(picker) {
                         const end = new Date();
                         const start = new Date();
@@ -141,7 +145,7 @@
                     }
                 },
                 {
-                text: 'Geçen Ay',
+                text: 'Last Month',
                 onClick(picker) {
                     const end = new Date();
                     const start = new Date();
@@ -161,28 +165,6 @@
 
             this.GetAllCourseGroups();
 
-
-
-            /*
-            for (let i = 0; i<100; i++){
-                this.veri.push(
-                    {
-                        "İsim Soyisim": "Ali Veli ",
-                        "Medrese": "Nur",
-                        "Yazı": 3,
-                        "Kur'an-ı Kerim": 4,
-                        "Cevşen": 5,
-                        "Ezber": 4,
-                        "Mütalaa": 4,
-                        "Kitap Okuma": 4 ,
-                        "Etüt": 3 ,
-                        "Soru": 2
-                    }
-                );
-
-            }*/
-
-            //this.GetDailyStudies();
         }
 
         private exportExcel() {
@@ -216,7 +198,7 @@
                 excel.export_json_to_excel({
                     header: headers, //Header Required
                     data, //Specific data Required
-                    filename: 'excel-list', //Optional
+                    filename: 'daily-study-liste', //Optional
                     autoWidth: true, //Optional
                     bookType: 'xlsx' //Optional
                 })
@@ -227,16 +209,15 @@
 
         private GetDailyStudies() {
 
-            const startDate = moment(this.dateValue[0]).format("YYYY-DD-MM");
+            const startDate = moment(this.dateValue[0]).format("YYYY-MM-DD");
 
-            const endDate = moment(this.dateValue[1]).format("YYYY-DD-MM");
+            const endDate = moment(this.dateValue[1]).format("YYYY-MM-DD");
 
             console.log(this.courseGroupId);
             console.log(this.validated);
 
-
             this.isLoading = true;
-            GetDailyStudiesAsync(1,3,'2019-01-01','2019-03-30',true).then(res => {
+            GetDailyStudiesAsync(1,this.courseGroupId,startDate,endDate,this.validated).then(res => {
                 const { data } = res;
 
                 console.log(data);
@@ -253,9 +234,8 @@
 
         private async GetAllCourseGroups() {
 
-            console.log('Bismillah');
             try {
-                const { data: groupList } = await GetMyCoursesListAsync();
+                const { data: groupList } = await GetAllCourseGroups();
 
                 this.courses = groupList;
             }

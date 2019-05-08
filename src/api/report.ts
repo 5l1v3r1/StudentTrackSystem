@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export const GetDailyStudiesAsync = (regionId: number, groupId: number,
+export const GetDailyStudiesAsync = (regionId: number, groupId: string,
                                      beginingDate: string,
                                      endDate: string,
                                      isValidated: boolean) =>

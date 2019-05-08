@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/views/layout/Layout.vue';
+import {syllabusRoutes} from "@/router/modules/syllabusRoutes";
+import {dailystudyRoutes} from "@/router/modules/dailystudyRoutes";
 
 Vue.use(Router);
 // bunu diyerek iki objeyede her componentten erişimi sağladık.
@@ -8,12 +10,12 @@ Vue.use(Router);
 // this.$route is the current route object
 
 /**
-* note: sub-menu only appear when children.length>=1
+ * note: sub-menu only appear when children.length>=1
 
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
    role: ['admin','editor']     will control the page role (you can set multiple roles)
    title: 'title'               the name show in submenu and breadcrumb (recommend set)
    icon: 'svg-name'             the icon show in the sidebar,
@@ -29,7 +31,7 @@ Vue.use(Router);
  const Foo = resolve => require(['./Foo.vue'], resolve)
  or
  const Foo = () => import('./Foo');
-**/
+ **/
 
 
 export const constantRouterMap = [
@@ -48,122 +50,70 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
     {
-        path: '/gösterge-paneli',
+        path: '/report',
         component: Layout,
+        redirect: '/report/dailystudy',
+        name: 'report',
         meta: {
-            title: 'Gösterge Paneli',
-            icon: 'table',
-            roles: [1]
+            title: 'Take Daily Study Report',
+            roles: [4]
         },
         children: [
             {
-                name: 'dashboard',
-                path: '',
-                component: () => import('@/views/dashboard/index.vue'),
-            }
-        ]
-    },
-    {
-        path: '/rapor-islem',
-        component: Layout,
-        redirect: '/rapor-islem/cetele-genel-toplam',
-        name: 'raporislem',
-        meta: {
-            title: 'Rapor İşlemleri',
-            roles: [1]
-        },
-        children: [
-            {
-                path: 'cetele-genel-toplam',
-                component: () => import('@/views/raporislem/index.vue'),
-                name: 'CeteleGenelToplam',
+                path: 'dailystudy',
+                component: () => import('@/views/report/index.vue'),
+                name: 'StatisticsDailyStudy',
                 meta: {
-                    title: 'Genel Toplam',
+                    title: 'Statistics',
                     icon: 'excel',
-                }
+                    affix: true
+                },
+
             }
         ]
     },
     {
-        path: '/talebe-islem',
+        path: '/student-operations',
         component: Layout,
+        name: 'StudentOperations',
+        redirect: {name: 'StudentList'},
         meta: {
-            roles: [1, 2, 4]
+            roles: [4],
+            title: "Student Operations",
+            icon: 'table'
         },
         children: [
             {
-                path: '',
-                component: () => import('@/views/talebeislem/index.vue'),
-                name: 'TalebeIslem',
-                meta: {
-                    title: 'Talebe İşlemleri',
-                    icon: 'table',
-                }
+                path: 'student-list',
+                name: 'StudentList',
+                meta: { title: 'Student List' },
+                component: () => import('@/views/studentoperations/index.vue')
             }
         ]
     },
-    {
-        path: '/cetele-islem/:name',
-        component: Layout,
-        meta: {
-            roles: [1, 2, 4],
-            hidden: true
-        },
-        children: [
-            {
-                path: '',
-                component: () => import('@/views/cetele/ceteleislem/index.vue'),
-                meta: { title: 'Çetele İşlem', noCache: true },
-                name: 'CeteleIslem',
-                hidden: true,
-            }
-        ],
-    },
-    {
-        path: '/kur-islem/:name',
-        component: Layout,
-        meta: {
-            roles: [1, 2, 4],
-            hidden: true
-        },
-        children: [
-            {
-                path: '',
-                component: () => import('@/views/kur/kurislem/index.vue'),
-                meta: { title: 'Kur İşlem', noCache: true },
-                name: 'KurIslem',
-                hidden: true,
-            }
-        ],
-    },
-    {
-        path: '/profil-islem/:name',
-        component: Layout,
-        meta: {
-            roles: [1, 2, 4],
-            hidden: true
-        },
-        children: [
-            {
-                path: '',
-                component: () => import('@/views/profil/profilislem/index.vue'),
-                meta: { title: 'Profil İşlem', noCache: true },
-                name: 'ProfilIslem',
-                hidden: true,
-            }
-        ],
-    },
+
+    ...dailystudyRoutes,
+
+    ...syllabusRoutes,
+
+    /*
     {
         path: '/',
         component: Layout,
-        redirect: '/cetele-doldur',
+        redirect: '/daily-study/fill',
         meta: { hidden: false },
         children: [{
-            path: 'cetele-doldur',
-            name: 'CeteleDoldur',
-            component: () => import('@/views/cetele/ceteledoldur/index.vue'),
-            meta: { title: 'Çetele Doldur', icon: 'form' }
+            path: 'daily-study/fill',
+            name: 'DailyStudyFill',
+            component: () => import('@/views/dailystudy/fill.vue'),
+            meta: { title: 'Fill Daily Study', icon: 'form' }
         }],
+    },
+    */
+    {
+        path: '/',
+        component: Layout,
+        meta: {hidden: true},
     },
     {
         path: '*',

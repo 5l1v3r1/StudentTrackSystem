@@ -16,9 +16,3 @@ export const GetDailyStudiesAsync = (regionId: number, groupId: string,
         }
     });
 
-
-export const GetDashboardData = () =>
-    request({
-        url: '/api/report/dashboard/admin/',
-        method: 'get'
-    });

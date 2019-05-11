@@ -12,7 +12,7 @@ export const dailystudyRoutes = [
                 path: '',
                 name: 'DailyStudyDates',
                 component: () => import('@/views/dailystudy/list.vue'),
-                meta: { title: 'Çetele Listele' },
+                meta: { title: 'List Daily Studies' },
                 props: true
             }
         ]

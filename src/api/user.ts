@@ -3,7 +3,7 @@ import {User} from "@/models/User";
 
 export const GetMyAccountInfoAsync = () =>
     service.request({
-    url: '/api/v2/user/me/',
+    url: '/api/user/me/',
     method: 'get',
   });
 

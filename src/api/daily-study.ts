@@ -47,4 +47,17 @@ export const AdminGetDailyStudies = (urlParams: DailyStudyOptionalParams = {}) =
         url: '/api/admin/daily-study/',
         method: 'get',
         params: urlParams
-    })
+    });
+
+
+export const AdminValidateDailyStudy = (dailyStudyId: number) =>
+    service.request<DailyStudy>({
+        url: `/api/admin/daily-study/${dailyStudyId}/validate/`,
+        method: 'put'
+    });
+
+export const AdminInvalidateDailyStudy = (dailyStudyId: number) =>
+    service.request<DailyStudy>({
+        url: `/api/admin/daily-study/${dailyStudyId}/invalidate/`,
+        method: 'put'
+    });

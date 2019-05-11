@@ -1,14 +1,18 @@
 <template>
+    <el-row type="flex" justify="center">
+        <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
     <el-table
             :data="courseList"
             @row-click="ContentsGit"
             style="width: 100%">
         <el-table-column
                 prop="course"
-                label="Ders">
+                label="Course">
         </el-table-column>
 
     </el-table>
+        </el-col>
+    </el-row>
 </template>
 
 <script lang="ts">

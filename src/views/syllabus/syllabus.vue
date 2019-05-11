@@ -1,16 +1,20 @@
 <template>
+    <el-row type="flex" justify="center">
+        <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
     <el-table
             :data="levelList"
             @row-click="kuraGit"
             style="width: 100%">
         <el-table-column
                 prop="level"
-                label="Seviye"
+                label="Level"
                 :formatter="kurFormatter"
         >
         </el-table-column>
 
     </el-table>
+        </el-col>
+    </el-row>
 </template>
 
 <script lang="ts">

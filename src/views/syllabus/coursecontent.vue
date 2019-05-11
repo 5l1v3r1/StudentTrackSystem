@@ -1,30 +1,34 @@
 <template>
     <div >
-        <el-table
-                :data="contentList"
-                ref="multipleTable"
-                @row-click="handleRowClick"
-                @select="handleSelection"
-                style="width: 100%">
-            <el-table-column
-                    type="selection"
-                    width="55">
-            </el-table-column>
-            <el-table-column
-                    property="name"
-                    label="İçerik">
-            </el-table-column>
+        <el-row type="flex" justify="center">
+            <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
+                <el-table
+                        :data="contentList"
+                        ref="multipleTable"
+                        @select="handleSelection"
+                        style="width: 100%">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            property="name"
+                            label="Content">
+                    </el-table-column>
 
-            <el-table-column>
-                <template slot-scope="scope">
-                    <el-tag
-                            :type="scope.row.isValidated === true ? 'success' : 'warning'">
-                        {{tagStatus(scope.row)}}
-                    </el-tag>
-                </template>
-            </el-table-column>
+                    <el-table-column label="Status">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    :type="scope.row.isValidated === true ? 'success' : 'warning'">
+                                {{tagStatus(scope.row)}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
 
-        </el-table>
+                </el-table>
+            </el-col>
+        </el-row>
+
 
         <el-row>
             <el-col align="center" style="margin-top: 20px;" >
@@ -61,6 +65,9 @@
 
         private componentKey: number = 1;
 
+        private updated = true;
+
+
         private tagStatus(row: Content) {
             if (row.isValidated === true)
                 return 'Approved';
@@ -78,10 +85,11 @@
         }
 
         private handleSelection(selection) {
+            console.log("handle")
             this.selectedContentList = selection;
         }
 
-        private handleRowClick(row) {
+        private handleRowClick(row, col, evt) {
             (<ElTable> this.$refs.multipleTable).toggleRowSelection(row);
         }
 
@@ -104,17 +112,17 @@
 
         private async SendContents() {
 
-            this.contentList.forEach( async (content: Content) => {
+            this.contentList.forEach( async (content: Content, index) => {
+
                 const isChecked = this.selectedContentList.find((c: Content) => {
                     return c.id == content.id
                 });
 
                 if (isChecked) {
-                    // vakıf onaylamadı.
-                    if (content.isValidated === undefined) {
+                    if (content.isValidated === false) {
 
                         // daha önceden göndermedi.
-                        if (content.waitForValidate === undefined) {
+                        if (content.waitForValidate === false) {
 
                             let contentInfo = {
                                 content: content.id
@@ -127,7 +135,9 @@
                                 contentInfo["user"] = this.userId;
                                 const { data: usm } = await AdminCreateUserSyllabus(contentInfo);
 
-                                await AdminValidateUserSyllabusObjectById(usm.id, contentInfo);
+                                const { data } = await AdminValidateUserSyllabusObjectById(usm.id, contentInfo);
+
+                                this.contentList[index].isValidated = true;
                             }
 
                         }
@@ -135,11 +145,13 @@
                     }
                 }
                 else {
-                    if (content.isValidated === true) { //onaylanmış bir şeyi vakıf iptal edecek.
+                    if (content.isValidated === true) {
                         if (this.userId !== undefined){
-                            //vakıf daha önceden bir talebesi için onayladığı content'i iptal edecek.
-                            if (content.syllabusId !== undefined)
+
+                            if (content.syllabusId !== undefined) {
                                 await AdminDeleteUserSyllabusObjectById(content.syllabusId);
+                                this.contentList[index].isValidated = true;
+                            }
 
                         }
                     }
@@ -154,6 +166,8 @@
             });
 
 
+
+
         }
 
 
@@ -163,6 +177,12 @@
                 const { data } = await GetContentsBySyllabusId(this.courseId);
 
                 this.contentList = data;
+
+                this.contentList.forEach(cl => {
+                    cl.waitForValidate = false;
+                    cl.isValidated = false;
+                    cl.isChecked = false;
+                });
 
                 if (this.userId === undefined){
 

@@ -1,5 +1,6 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { DeviceType, AppModule } from '@/store/app.module';
+import {AuthModule} from "@/store/auth.module";
 
 const WIDTH = 992; // refer to Bootstrap's responsive design
 
@@ -24,11 +25,15 @@ export default class ResizeHandlerMixin extends Vue {
     window.addEventListener('resize', this.resizeHandler);
   }
 
+
+
   private mounted() {
+
     const isMobile = this.isMobile();
     if (isMobile) {
       AppModule.ToggleDevice(DeviceType.Mobile);
       AppModule.CloseSideBar(true);
+
     }
   }
 

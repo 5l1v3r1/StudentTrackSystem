@@ -1,4 +1,4 @@
-# cetelem
+# student track system
 
 ## Project setup
 ```

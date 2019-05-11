@@ -5,7 +5,7 @@
 
             <el-row type="flex" justify="center">
                 <el-col align="center">
-                    <el-tag class="filter-item">London</el-tag>
+                    <el-tag class="filter-item">United Kingdom</el-tag>
 
                     <el-date-picker
                             style="margin-left:20px;"
@@ -14,9 +14,8 @@
                             align="left"
                             size="large"
                             format="MM-dd-yyyy"
-                            range-separator="To"
-                            start-placeholder="Start Tarihi"
-                            end-placeholder="End Tarihi"
+                            start-placeholder="Start Date"
+                            end-placeholder="End Date"
                             :picker-options="pickerOptions">
                     </el-date-picker>
 
@@ -212,9 +211,6 @@
             const startDate = moment(this.dateValue[0]).format("YYYY-MM-DD");
 
             const endDate = moment(this.dateValue[1]).format("YYYY-MM-DD");
-
-            console.log(this.courseGroupId);
-            console.log(this.validated);
 
             this.isLoading = true;
             GetDailyStudiesAsync(1,this.courseGroupId,startDate,endDate,this.validated).then(res => {

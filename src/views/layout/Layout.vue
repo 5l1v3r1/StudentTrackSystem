@@ -17,6 +17,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import { DeviceType, AppModule } from '@/store/app.module';
 import TagsView from "@/views/layout/components/TagsView/index.vue";
+import {AuthModule} from "@/store/auth.module";
 
 @Component({
   components: {
@@ -39,6 +40,18 @@ export default class Layout extends mixins(ResizeMixin) {
   private handleClickOutside() {
     AppModule.CloseSideBar(false);
   }
+
+  created() {
+    console.log(AuthModule.User.user_type)
+    if (AuthModule.User.user_type == 8) {
+      this.$router.push({path: '/daily-study'});
+    }
+    else
+      this.$router.push({path: '/report/dailystudy'})
+  }
+
+
+
 }
 </script>
 

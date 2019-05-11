@@ -1,40 +1,50 @@
 <template>
     <div class="app-container">
-        <div class="cetele-doldur" style="width: 70%; margin: auto;">
-            <el-table :data="dailyStudy.studies" border fit v-loading="tableLoading">
-                <el-table-column align="center" label="Ders Adı" min-width="180px">
-                    <template slot-scope="scope">
-                        <span>{{mapCourseIdToCourse(scope.row.course)}}</span>
-                    </template>
-                </el-table-column>
+        <div>
 
-                <el-table-column align="center" label="Sayfa Aralığı">
-                    <el-table-column align="center" label="Başlangıç" width="120">
-                        <template slot-scope="scope">
-                            <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
-                                      v-model="scope.row.begining"/>
-                        </template>
-                    </el-table-column>
+            <el-row type="flex" justify="center">
+                <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
+                    <el-table
+                            :data="dailyStudy.studies" border fit stripe v-loading="tableLoading">
+                        <el-table-column align="center" label="Course Name" min-width="150px">
+                            <template slot-scope="scope">
+                                <span>{{mapCourseIdToCourse(scope.row.course)}}</span>
+                            </template>
+                        </el-table-column>
 
-                    <el-table-column align="center" label="Bitiş" width="120">
-                        <template slot-scope="scope">
-                            <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
-                                      v-model="scope.row.end"/>
-                        </template>
-                    </el-table-column>
-                </el-table-column>
+                        <el-table-column align="center" label="Correct" min-width="80px">
+                            <template slot-scope="scope">
+                                <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
+                                          v-model="scope.row.begining"/>
+                            </template>
+                        </el-table-column>
 
-                <el-table-column align="center" label="Miktar" width="120">
-                    <template slot-scope="scope">
-                        <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
-                                  v-model="scope.row.amount"/>
-                    </template>
-                </el-table-column>
-            </el-table>
+                        <el-table-column align="center" label="Incorrect" min-width="80px">
+                            <template slot-scope="scope">
+                                <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
+                                          v-model="scope.row.end"/>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column align="center" label="Total" min-width="80px">
+                            <template slot-scope="scope">
+                                <el-input @input="ChangedAmount(scope.row)" class="edit-input" size="medium" type="number"
+                                          v-model="scope.row.amount" />
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-col>
+            </el-row>
 
             <el-row align="center">
                 <el-col align="center">
-                    <el-button @click="SendCetele()" size="medium" style="margin-top: 20px;" type="primary">Kaydet
+                    <el-button @click="SendCetele()" size="medium" style="margin-top: 20px;" type="primary">Save
+                    </el-button>
+
+                    <el-button v-if="visibleValidateBtn"
+                            @click="ChangeDSStatus()" size="medium" style="margin-top: 20px;"
+                               :type="typeColor">
+                        {{ChangeCssValBtn}}
                     </el-button>
                 </el-col>
             </el-row>
@@ -48,8 +58,8 @@
 
     import {
         AdminGetDailyStudyByIdAsync,
-        AdminGetTodayDailyStudy,
-        AdminSendDailyStudy,
+        AdminGetTodayDailyStudy, AdminInvalidateDailyStudy,
+        AdminSendDailyStudy, AdminValidateDailyStudy,
         GetTodayDailyStudyAsync,
         SendDailyStudyAsync
     } from "@/api/daily-study";
@@ -59,6 +69,7 @@
     import {Course} from "@/models/Course";
     import {Study} from "@/models/Study";
     import {AdminGetAccountByUserIdAsync} from "@/api/user";
+    import {AuthModule} from "@/store/auth.module";
 
     @Component
     export default class FillDailyStudy extends Vue {
@@ -67,6 +78,11 @@
         dailyStudy: DailyStudy = {} as DailyStudy;
 
         tableLoading: boolean = true;
+
+        typeColor: string = 'primary';
+
+        visibleValidateBtn: boolean = !(AuthModule.User.user_type == 8);
+
 
         @Prop() private userId!: number;
         @Prop() private userName!: string;
@@ -81,6 +97,37 @@
             }
         }
 
+        async ChangeDSStatus() {
+            if (this.dailyStudy.is_validated == false) {
+                const { data } = await AdminValidateDailyStudy(this.dailyStudy.id);
+                this.dailyStudy = data;
+
+                this.$message({
+                    message: 'Validated successfully!',
+                    type: 'success',
+                    duration: 2000,
+                });
+            }
+            else {
+                const { data } = await AdminInvalidateDailyStudy(this.dailyStudy.id);
+                this.dailyStudy = data;
+                this.$message({
+                    message: 'Unvalidated successfully!',
+                    type: 'success',
+                    duration: 2000,
+                });
+            }
+        }
+
+
+        get ChangeCssValBtn() {
+            if (this.dailyStudy.is_validated){
+                this.typeColor = 'danger';
+                return 'Invalidate';
+            }
+            this.typeColor = 'success';
+            return 'Validate';
+        }
 
         ChangedAmount(row: Study) {
 
@@ -141,17 +188,16 @@
 
                     const {data: dailyStudy} = await GetTodayDailyStudyAsync();
                     this.dailyStudy = dailyStudy as DailyStudy;
-                } else { // talebe-işlemlerinden gelmiş.
-                    //  group id alıp, coursegroup service'i o id üzerinden çalıştırmak için.
+                } else {
+
                     const {data: user} = await AdminGetAccountByUserIdAsync(this.userId);
                     this.courseList = await GetCoursesByGroupId(user.course_group);
 
-                    if (this.dailyStudyId === undefined){ // o günün çetelesini dolduracak.
-                        const { data } = await AdminGetTodayDailyStudy(user.id);
+                    if (this.dailyStudyId === undefined) { // o günün çetelesini dolduracak.
+                        const {data} = await AdminGetTodayDailyStudy(user.id);
                         this.dailyStudy = data;
-                    }
-                    else { // özel bir günün çetelesini dolduracak.
-                        const { data } = await AdminGetDailyStudyByIdAsync(+this.dailyStudyId);
+                    } else { // özel bir günün çetelesini dolduracak.
+                        const {data} = await AdminGetDailyStudyByIdAsync(+this.dailyStudyId);
                         this.dailyStudy = data;
                     }
                 }
@@ -166,7 +212,17 @@
     }
 </script>
 
+
+<style>
+    .el-input__inner {
+        padding: 0px 0px 0px 5px;
+    }
+
+</style>
+
 <style scoped>
+
+
     .edit-input {
 
     }

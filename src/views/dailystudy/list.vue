@@ -1,8 +1,8 @@
 <template>
     <div class="app-container">
 
-        <el-row>
-
+        <el-row type="flex" justify="center">
+            <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
             <el-date-picker
                     v-model="dateValue"
                     type="daterange"
@@ -17,9 +17,11 @@
 
 
             <el-button type="primary" @click="ceteleleriListele">Get</el-button>
-
+            </el-col>
         </el-row>
 
+        <el-row type="flex" justify="center">
+            <el-col align="center" :xs="24" :sm="12" :md="12" :lg="12">
         <el-table
                 :data="DailyStudyList"
                 @row-click="tariheGit"
@@ -31,6 +33,8 @@
             </el-table-column>
 
         </el-table>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
